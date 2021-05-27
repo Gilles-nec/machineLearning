@@ -8,6 +8,8 @@ import pandas as pd
 from ml.data import process_data
 from ml.model import train_model
 from ml.model import inference
+from ml.model import compute_model_metrics
+
 
 # Add code to load in the data.
 data = pd.read_csv("data/clean_census.csv")
@@ -27,15 +29,20 @@ cat_features = [
 X_train, y_train, encoder, lb = process_data(
     train, categorical_features=cat_features, label="salary", training=True
 )
-print(len(process_data(
-    train, categorical_features=cat_features, label="salary", training=True
-)))
+
 # Proces the test data with the process_data function.
-x_test, y_test, encoder_test, lb_test = process_data(
+X_test, y_test, encoder_test, lb_test = process_data(
     test, categorical_features=cat_features, label="salary", training=True
 )
 # Train and save a model.
 model = train_model(X_train, y_train)
-filename = './model/model.sav'
-pickle.dump(model, open(filename, 'wb'))
-#print(model.predict(x_test))
+model_filename = './model/model.sav'
+encoder_filename = './model/encoder.sav'
+pickle.dump(model, open(model_filename, 'wb'))
+pickle.dump(model, open(encoder_filename, 'wb'))
+
+#Model inference
+pred = inference(model, X_train)
+
+#Get prediction metrics
+precision, recall, fbeta = compute_model_metrics(y_train, pred)
