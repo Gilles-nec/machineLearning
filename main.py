@@ -1,4 +1,5 @@
 # Put the code for your API here.
+import os
 import pickle
 import pandas as pd
 from typing import List
@@ -7,6 +8,12 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from starter.ml.model import inference
 from starter.ml.data import process_data
+
+if "DYNO" in os.environ and os.path.isdir(".dvc"):
+    os.system("dvc config core.no_scm true")
+    if os.system("dvc pull") != 0:
+        exit("dvc pull failed")
+    os.system("rm -r .dvc .apt/usr/lib/dvc")
 
 app = FastAPI()
 
@@ -36,4 +43,5 @@ async def run_inference(data: ModelData):
         )
     pred = inference(model, X_test)
     print(pred)
-    
+
+
