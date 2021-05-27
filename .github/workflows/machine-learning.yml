@@ -42,5 +42,7 @@ jobs:
 
       - name: Setup DVC action
         uses: iterative/setup-dvc@v1
+       
+      - name: Run DVC
         run: |
           dvc pull
