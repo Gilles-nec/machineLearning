@@ -26,7 +26,7 @@ cat_features = [
     "sex",
     "native-country",
 ]
-X_train, y_train, encoder, lb = process_data(
+X_train, Y_train, encoder, lb = process_data(
     train, categorical_features=cat_features, label="salary", training=True
 )
 
@@ -34,15 +34,18 @@ X_train, y_train, encoder, lb = process_data(
 X_test, y_test, encoder_test, lb_test = process_data(
     test, categorical_features=cat_features, label="salary", training=True
 )
-# Train and save a model.
-model = train_model(X_train, y_train)
-model_filename = './model/model.sav'
-encoder_filename = './model/encoder.sav'
-pickle.dump(model, open(model_filename, 'wb'))
-pickle.dump(model, open(encoder_filename, 'wb'))
+# Train and save the model and encoder.
+def train_save_model(x_train, y_train, encoder):
+    model = train_model(x_train, y_train)
+    model_filename = './model/model.sav'
+    encoder_filename = './model/encoder.sav'
+    pickle.dump(model, open(model_filename, 'wb'))
+    pickle.dump(encoder, open(encoder_filename, 'wb'))
+    return model
+
 
 #Model inference
-pred = inference(model, X_train)
+pred = inference(train_save_model(X_train, Y_train, encoder), X_train)
 
 #Get prediction metrics
-precision, recall, fbeta = compute_model_metrics(y_train, pred)
+precision, recall, fbeta = compute_model_metrics(Y_train, pred)

@@ -18,4 +18,5 @@ data = json.dumps(data)
 
 #Send post request and get the response 
 response = requests.post("http://127.0.0.1:8000/inference", data)
-print(response)
+print(response.status_code)
+print(response.content)

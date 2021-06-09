@@ -1,6 +1,8 @@
 # Put the code for your API here.
 import os
 import pickle
+import json
+from fastapi.responses import HTMLResponse
 import pandas as pd
 from typing import List
 from sklearn.model_selection import train_test_split
@@ -24,11 +26,22 @@ class ModelData(BaseModel):
 
 @app.get("/")
 def read_root():
-    return "Welcome to the main page"
+    reponse = {"msg": "Welcome to the main page"}
+    return reponse
 
 
-@app.post("/inference", response_model=ModelData, status_code=201)
+@app.post("/inference", response_model=ModelData)
 async def run_inference(data: ModelData):
+    html_content = """
+    <html>
+        <head>
+            <title>Inference</title>
+        </head>
+        <body>
+            <h1>Model Inference</h1>
+        </body>
+    </html>
+    """
     modelFile = './model/model.sav'
     model = pickle.load(open(modelFile, 'rb'))
     csv = pd.read_csv("data/clean_census.csv")
@@ -43,5 +56,7 @@ async def run_inference(data: ModelData):
         )
     pred = inference(model, X_test)
     print(pred)
+    return HTMLResponse(content=html_content, status_code=200)
+    #return pred.tolist()
 
 

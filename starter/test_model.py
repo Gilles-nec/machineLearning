@@ -12,7 +12,7 @@ data = pd.read_csv("data/clean_census.csv")
 train, test = train_test_split(data, test_size=0.20)
 
 
-def test_size_of_process_data():
+def test_type_of_process_data():
     cat_features = [
         "workclass",
         "education",
@@ -23,9 +23,9 @@ def test_size_of_process_data():
         "sex",
         "native-country",
     ]
-    assert len(process_data(
-        train, categorical_features=cat_features,
-        label="salary", training=True)) == 4
+    assert isinstance(process_data(
+        train, categorical_features=cat_features, label="salary", training=True
+        ), tuple)
 
 
 def test_type_of_train_model():
